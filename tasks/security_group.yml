@@ -1,0 +1,32 @@
+---
+
+- name: "{{os_action}} a security_group"
+  os_security_group:
+    auth: "{{ os_auth }}"
+    region_name: "{{ os_region }}"
+    state: "{{ os_security_group_state }}"
+    name: "{{ item.name }}"
+    description: "{{ item.description }}"
+  with_items:
+    - "{{ os_security_group }}"
+  when: os_action == "setup" or os_purge_security_group == "yes"
+  tags:
+    - os_sec_group
+
+- name: "{{os_action}}  a rule in security group"
+  os_security_group_rule:
+    auth: "{{ os_auth }}"
+    region_name: "{{ os_region }}"
+    state: "{{ item.1.state }}"
+    security_group: "{{ item.0.name }}"
+    ethertype: "{{ item.1.ethertype }}"
+    protocol: "{{ item.1.protocol }}"
+    port_range_min: "{{ item.1.port_range_min }}"
+    port_range_max: "{{ item.1.port_range_max }}"
+    remote_ip_prefix: "{{ item.1.remote_ip_prefix }}"
+  with_subelements:
+    - "{{ os_security_group }}"
+    - rules
+  when: os_action == "setup"
+  tags:
+    - os_sec_group

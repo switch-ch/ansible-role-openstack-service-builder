@@ -1,0 +1,13 @@
+---
+
+- name: "{{ os_action }} server group"
+  os_server_group:
+    state: "{{ os_server_group_state }}"
+    auth: "{{ os_auth }}"
+    region_name: "{{ os_region }}"
+    name: "{{ item.name }}"
+    policies: "{{ item.policies }}"
+  with_items: "{{ os_server_group['list'] }}"
+  when: os_action == "create" or os_purge_server_group == "yes"
+  tags:
+    - os_server_group

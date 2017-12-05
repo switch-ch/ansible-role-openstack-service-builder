@@ -1,0 +1,16 @@
+---
+
+- name: "{{os_action}}: Make VIP ip assignable to vm-ports"
+  os_port:
+    auth: "{{ os_auth }}"
+    region_name: "{{ os_region }}"
+    state: "{{ os_vip_state }}"
+    network: "{{ os_network_name }}"
+    name: "{{ item.name }}"
+    allowed_address_pairs: "{{ item.ips }}"
+  with_items:
+    - "{{ os_vip['ports'] }}"
+  when: os_action == "create"
+  tags:
+    - os_vip_port
+    - os_server_all

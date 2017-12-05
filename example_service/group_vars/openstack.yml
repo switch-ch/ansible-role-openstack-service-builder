@@ -1,0 +1,14 @@
+---
+
+# in this file we define the server/localhost which has the openstack client software installed.
+
+# the config is configured to run on localhost on a MAC.
+
+# on MAC specify interpreter to get rid of "missing shade" error, not needed otherwise
+ansible_python_interpreter: "/usr/local/bin/python"
+
+ansible_connection: local
+
+# don't use the default from the infrastructure role.
+# I you don't use localhost then you'd want to set an IP or DNS name here.
+ansible_host: ''

@@ -1,0 +1,22 @@
+---
+
+- name: "{{ os_action }} a server"
+  os_server:
+    state: "{{ os_vm_state }}"
+    auth: "{{ os_auth }}"
+    region_name: "{{ os_region }}"
+    name: "{{ server_name_prefix }}{{ item }}"
+    boot_volume: "{{ site }}-{{ item }}_root"
+    key_name: "{{ os_ssh_key }}"
+    timeout: 200
+    flavor: "{{ os_server[item].flavor }}"
+    auto_ip: false
+    nics:
+      - port-name: "{{ site }}-{{ item }}-port_{{ os_network_name }}"
+    scheduler_hints: "{{ os_server[item].hints }}"
+  with_items: "{{ server_list }}"
+  when: server_list != ['']
+  tags:
+    - os_server
+    - os_server_all
+

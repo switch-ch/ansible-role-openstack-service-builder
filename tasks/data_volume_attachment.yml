@@ -1,0 +1,16 @@
+---
+
+- name: "{{ os_action }} data volume attachement to {{ server_loop_var }}"
+  os_server_volume:
+    auth: "{{ os_auth }}"
+    region_name: "{{ os_region }}"
+    state: "{{ os_volume_state }}"
+    server: "{{ server_name_prefix }}{{ server_loop_var }}"
+    volume: "{{ site }}-{{ item.name_prefix }}-{{ item.name }}"
+    device: "{{ item.device }}"
+  with_items: "{{ os_volumes[server_loop_var] }}"
+  ignore_errors: yes
+  when: os_volumes[server_loop_var] is defined
+  tags:
+    - os_data
+    - os_attach

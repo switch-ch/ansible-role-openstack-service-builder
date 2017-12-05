@@ -1,0 +1,12 @@
+---
+
+- name: "Print ansible_host variable"
+  debug:
+    msg: "{{ansible_host}}"
+  tags:
+    - always
+
+- name: "Test ssh to server"
+  shell: "echo hi there on the server"
+  tags:
+    - always

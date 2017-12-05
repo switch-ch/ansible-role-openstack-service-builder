@@ -1,0 +1,74 @@
+---
+#####################
+# Site config for site2
+
+#####################
+# site: instance of service e.g. zbilling for production in zhdk; sbilling for staging in unil
+
+site: "site2"
+os_cli_server: "os.site2"
+
+#####################
+# SWITCHengines project (tenant)
+
+os_project: "my_project1"
+os_region: "LS"
+
+#####################
+# networks
+os_network_name: "{{site}}"
+ipv4_prefix: "10.0.102"
+os_network:
+  - name: "{{os_network_name}}"
+    ipv4_cidr: "{{ipv4_prefix}}.0/24"
+    external: "yes"
+
+#####################
+# security groups (optional)
+
+os_purge_security_group: "yes"
+os_security_group:
+  - name: "{{site}}-ssh"
+    description: "ssh access"
+    rules:
+      - { ethertype: "IPv4", protocol: "tcp", port_range_min: "22", port_range_max: "22", remote_ip_prefix: "0.0.0.0/0", state: "present" }
+      - { ethertype: "IPv6", protocol: "tcp", port_range_min: "22", port_range_max: "22", remote_ip_prefix: "::/0", state: "present" }
+
+#####################
+# server groups  (optional)
+os_purge_server_group: "yes"
+os_server_group:
+  list:
+    - { name: "server_group1", policies: ['anti-affinity'] }
+  # look up id after they were created: `openstack server group list`
+  server_group1: "d5426315-91c1-4543-a80d-7c11cdaa7435"
+
+
+#####################
+# servers
+server_name_prefix: ""
+os_server:
+  myserver1.site2: { ip: "{{ipv4_prefix}}.10", network: "{{os_network_name}}", flavor: "c1.small", image: "{{os_image['xenial']}}", root_size: "20", security_groups: "{{site}}-ssh", hints: {group: "{{ os_server_group['server_group1'] }}"}, floating_ip: '86.119.41.50' }
+  myserver1.site2: { ip: "{{ipv4_prefix}}.10", network: "{{os_network_name}}", flavor: "c1.small", image: "{{os_image['xenial']}}", root_size: "20", security_groups: "{{site}}-ssh", hints: {group: "{{ os_server_group['server_group1'] }}"} }
+
+
+#####################
+# ceph data volumes; do not add root volumes and ssd-ephemeral volumes.
+os_purge_data_volume: "yes"
+os_volumes:
+  # name is the mount point, "name_prefix-name" is the name the volume gets in cinder
+  myserver1.site2:
+    - { name: "data", name_prefix: "data", state: "mounted", device: "/dev/vdb", size: "10", fs: "xfs", owner: "root", group: "root", mode: "0755" }
+
+#####################
+# vip
+os_purge_vip: "yes"
+
+server_group1_vip: "{{ipv4_prefix}}.100"
+
+os_vip:
+  ips:
+    - { name: "server_group1_vip", ip: "{{ server_group1_vip }}" }
+  ports:
+    - { name: '{{ site }}-myserver1.site2-port_{{ os_network_name }}', ips: [ { ip_address: "{{ server_group1_vip }}" } ] }
+    - { name: '{{ site }}-myserver2.site2-port_{{ os_network_name }}', ips: [ { ip_address: "{{ server_group1_vip }}" } ] }

@@ -1,0 +1,20 @@
+Host *
+    UseKeychain yes
+    ForwardAgent yes
+    ForwardX11 no
+    forwardx11trusted no
+    CheckHostIP no
+    StrictHostKeyChecking no
+    UserKnownHostsFile=/dev/null
+    User ubuntu
+
+##############################
+# ZHDK
+
+Host jumphost.zhdk
+    HostName 86.119.41.50
+
+Host 10.0.100.*
+    LogLevel error
+    User ubuntu
+    ProxyCommand ssh -q -a -T -F ssh_config jumphost.zhdk -W %h:%p

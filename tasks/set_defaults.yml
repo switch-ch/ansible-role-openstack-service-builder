@@ -1,0 +1,39 @@
+---
+
+- name: default action is create
+  set_fact:
+    os_action: "create"
+  when: os_action is undefined
+  tags:
+    - always
+
+- name: default server list is inventory_hostname
+  set_fact:
+    server_list:  "{{ inventory_hostname }}"
+  when: server_list is undefined and inventory_hostname is defined
+  tags:
+    - always
+
+- name: set state variables
+  set_fact:
+    os_state: absent
+    os_vm_state: absent
+    os_volume_state: absent
+    os_server_group_state: absent
+    os_security_group_state: absent
+    os_vip_state: absent
+  tags:
+    - always
+  when: os_action == "delete" or os_action == "cleanup"
+
+- name: set state variables
+  set_fact:
+    os_state: present
+    os_vm_state: present
+    os_volume_state: present
+    os_server_group_state: present
+    os_security_group_state: present
+    os_vip_state: present
+  tags:
+    - always
+  when: os_action == "create" or os_action == "setup"

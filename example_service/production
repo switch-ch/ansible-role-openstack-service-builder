@@ -1,0 +1,40 @@
+[server_group1_site1]
+myserver1.site1
+
+[server_group1_site2]
+myserver1.site2
+myserver2.site2
+
+
+[openstack_site1]
+os.site1
+[openstack_site2]
+os.site2
+
+###########################
+# Groups by Server-Type
+
+[server_group1:children]
+server_group1_site1
+server_group1_site2
+
+# servers must contain all 'server-type' groups except openstack
+[servers:children]
+server_group1
+
+[openstack:children]
+openstack_site1
+openstack_site2
+
+###########################
+# Site Configuation Groups
+
+[infra.site1:children]
+server_group1_site1
+openstack_site1
+
+[infra.site2:children]
+server_group1_site2
+openstack_site2
+
+

@@ -1,0 +1,8 @@
+---
+
+#####################
+# images
+
+os_image:
+  trusty: "Ubuntu Trusty 14.04 (SWITCHengines)"
+  xenial: "Ubuntu Xenial 16.04 (SWITCHengines)"

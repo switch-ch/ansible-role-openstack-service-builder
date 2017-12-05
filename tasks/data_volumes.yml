@@ -1,0 +1,8 @@
+---
+
+- include_tasks: data_volume.yml
+  with_items: "{{ server_list }}"
+  loop_control:
+    loop_var: server_loop_var
+  tags:
+    - os_data

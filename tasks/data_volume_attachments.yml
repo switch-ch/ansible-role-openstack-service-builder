@@ -1,0 +1,10 @@
+---
+
+
+- include_tasks: data_volume_attachment.yml
+  with_items: "{{ server_list }}"
+  loop_control:
+    loop_var: server_loop_var
+  tags:
+    - os_data
+    - os_attach

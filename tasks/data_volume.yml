@@ -1,0 +1,14 @@
+---
+
+- name: "{{ os_action }} a data volume"
+  os_volume:
+    auth: "{{ os_auth }}"
+    region_name: "{{ os_region }}"
+    state: "{{ os_volume_state }}"
+    size: "{{ item.size }}"
+    display_name: "{{ site }}-{{ item.name_prefix }}-{{ item.name }}"
+  with_items: "{{ os_volumes[server_loop_var] }}"
+  when: (os_action == "create" or os_purge_data_volume == "yes") and os_volumes[server_loop_var] is defined
+  tags:
+    - os_data
+

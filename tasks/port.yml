@@ -1,0 +1,36 @@
+---
+
+- name: "{{ os_action }} a network port"
+  os_port:
+    auth: "{{ os_auth }}"
+    region_name: "{{ os_region }}"
+    state: "{{ os_vm_state }}"
+    name: "{{ site }}-{{ item }}-port_{{ os_network_name }}"
+    network: "{{ os_network_name }}"
+    fixed_ips:
+      - ip_address: "{{ os_server[item].ip }}"
+      - ip_address: "{{ ipv6_prefix }}:{{ os_server[item].ip | regex_replace('.*\\.(.*)$', '\\1') }}"
+    security_groups: "{{ os_server[item].security_groups }}"
+  with_items: "{{ server_list }}"
+  when: server_list != [''] and ipv6_prefix != ""
+  tags:
+    - os_port
+    - os_server_all
+
+- name: "{{ os_action }} a network port"
+  os_port:
+    auth: "{{ os_auth }}"
+    region_name: "{{ os_region }}"
+    state: "{{ os_vm_state }}"
+    name: "{{ site }}-{{ item }}-port_{{ os_network_name }}"
+    network: "{{ os_network_name }}"
+    fixed_ips:
+      - ip_address: "{{ os_server[item].ip }}"
+    security_groups: "{{ os_server[item].security_groups }}"
+  with_items: "{{ server_list }}"
+  when: server_list != [''] and ipv6_prefix == ""
+  tags:
+    - os_port
+    - os_server_all
+
+

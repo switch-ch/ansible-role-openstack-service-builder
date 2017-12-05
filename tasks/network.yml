@@ -1,0 +1,41 @@
+---
+
+- name: "{{ os_action }} a network"
+  os_network:
+    state: "{{ os_state }}"
+    auth: "{{ os_auth }}"
+    region_name: "{{ os_region }}"
+    name: "{{ item.name }}"
+    timeout: 200
+  with_items: "{{ os_network }}"
+  tags:
+    - os_network
+
+- name: "{{ os_action }} a subnet"
+  os_subnet:
+    state: "{{ os_state }}"
+    auth: "{{ os_auth }}"
+    region_name: "{{ os_region }}"
+    name: "{{ item.name }}_ipv4"
+    network_name: "{{ item.name }}"
+    cidr: "{{ item.ipv4_cidr }}"
+    timeout: 200
+  with_items: "{{ os_network }}"
+  tags:
+    - os_network
+
+- name: "{{ os_action }} a subnet"
+  os_subnet:
+    state: "{{ os_state }}"
+    auth: "{{ os_auth }}"
+    region_name: "{{ os_region }}"
+    name: "{{ item.name }}_ipv6"
+    network_name: "{{ item.name }}"
+    ip_version: 6
+    ipv6_address_mode: "dhcpv6-stateful"
+    ipv6_ra_mode: "dhcpv6-stateful"
+    timeout: 200
+    use_default_subnetpool: yes
+  with_items: "{{ os_network }}"
+  tags:
+    - os_network

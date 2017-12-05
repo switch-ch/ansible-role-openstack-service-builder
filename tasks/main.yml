@@ -1,0 +1,10 @@
+---
+
+- import_tasks: "set_defaults.yml"
+  tags:
+    - infra
+
+- import_tasks: "dispatch.yml"
+  tags:
+    - infra
+

@@ -1,0 +1,15 @@
+---
+
+- name: "{{ os_action }} a root volume"
+  os_volume:
+    auth: "{{ os_auth }}"
+    region_name: "{{ os_region }}"
+    state: "{{ os_volume_state }}"
+    size: "{{ os_server[item].root_size }}"
+    display_name: "{{ site }}-{{ item }}_root"
+    image: "{{ os_server[item].image }}"
+  with_items: "{{ server_list }}"
+  when: server_list != ['']
+  tags:
+    - os_volume
+    - os_server_all

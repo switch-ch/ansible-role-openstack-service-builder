@@ -1,0 +1,27 @@
+---
+
+#####################
+# MISC
+
+# short server names
+server_name_prefix: "{{ site }}-"
+short_server_name: "{{ ansible_hostname | regex_replace('^[^-]+-(.*)$', '\\1') }}"
+
+
+#####################
+# infrastructure: empty defaults
+
+ipv6_prefix: ""
+
+os_server_group: {list: []}
+os_security_group: []
+os_volumes: []
+os_vip: {ips: [], ports: []}
+
+#####################
+# delete precious resources? no by default override in site-config
+
+os_purge_data_volume: "no"
+os_purge_server_group: "no"
+os_purge_security_group: "no"
+os_purge_vip: "no"

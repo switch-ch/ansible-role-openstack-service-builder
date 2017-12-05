@@ -1,0 +1,21 @@
+---
+
+- hosts:
+    - servers
+  vars:
+    os_action: "delete"
+  roles:
+    - openstack-service-builder
+  become: false
+  gather_facts: no
+
+- hosts:
+    - openstack
+  vars:
+    server_list: ['']
+    os_action: "cleanup"
+  roles:
+    - openstack-service-builder
+  become: false
+  gather_facts: no
+

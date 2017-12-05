@@ -1,0 +1,20 @@
+---
+
+- hosts:
+    - openstack
+  vars:
+    server_list:  ['']
+    os_action: "setup"
+  roles:
+    - openstack-service-builder
+  become: false
+  gather_facts: no
+
+- hosts:
+    - servers
+  vars:
+    os_action: "create"
+  roles:
+    - openstack-service-builder
+  become: false
+  gather_facts: no

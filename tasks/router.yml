@@ -1,0 +1,15 @@
+---
+
+- name: "{{ os_action }} a router"
+  os_router:
+    state: "{{ os_state }}"
+    auth: "{{ os_auth }}"
+    region_name: "{{ os_region }}"
+    name: "{{ item.name }}_router"
+    network: "public"
+    interfaces: "{{ item.name }}_ipv4"
+    timeout: 200
+  with_items: "{{ os_network }}"
+  tags:
+    - os_network
+    - os_router

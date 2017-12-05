@@ -1,0 +1,42 @@
+---
+
+- name: "deletion"
+  block:
+    - import_tasks: data_volume_attachments.yml
+    - import_tasks: data_volumes.yml
+    - import_tasks: floating_ip.yml
+    - import_tasks: server.yml
+    - import_tasks: port.yml
+    - import_tasks: volume.yml
+  when: os_action == "delete"
+  delegate_to: "{{os_cli_server}}"
+
+- name: "cleanup"
+  block:
+    - import_tasks: server_group.yml
+    - import_tasks: security_group.yml
+    - import_tasks: vip.yml
+    - import_tasks: router.yml
+    - import_tasks: network.yml
+  when: os_action == "cleanup"
+
+- name: "setup"
+  block:
+    - import_tasks: network.yml
+    - import_tasks: router.yml
+    - import_tasks: security_group.yml
+    - import_tasks: server_group.yml
+    - import_tasks: vip.yml
+  when: os_action == "setup"
+
+- name: "creation"
+  block:
+    - import_tasks: volume.yml
+    - import_tasks: port.yml
+    - import_tasks: server.yml
+    - import_tasks: floating_ip.yml
+    - import_tasks: vip_port.yml
+    - import_tasks: data_volumes.yml
+    - import_tasks: data_volume_attachments.yml
+  when: os_action == "create"
+  delegate_to: "{{os_cli_server}}"

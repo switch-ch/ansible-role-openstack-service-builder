@@ -1,0 +1,10 @@
+---
+
+- hosts:
+    - server_group1
+  roles:
+    # it would be possible to add openstack-service-builder here as well
+    #- openstack-service-builder
+    - sample_service
+  become: false
+  gather_facts: no

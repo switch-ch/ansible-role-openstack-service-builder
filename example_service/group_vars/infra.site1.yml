@@ -1,0 +1,44 @@
+---
+#####################
+# Site config for site1
+
+#####################
+# site: instance of service e.g. zbilling for production in zhdk; sbilling for staging in unil
+
+site: "site1"
+os_cli_server: "os.site1"
+
+#####################
+# SWITCHengines project (tenant)
+
+os_project: "my_project1"
+os_region: "ZH"
+
+#####################
+# networks
+os_network_name: "{{site}}"
+ipv4_prefix: "10.0.101"
+os_network:
+  - name: "{{os_network_name}}"
+    ipv4_cidr: "{{ipv4_prefix}}.0/24"
+    external: "yes"
+
+#####################
+# security groups (optional)
+
+os_purge_security_group: "yes"
+os_security_group:
+  - name: "{{site}}-ssh"
+    description: "ssh access"
+    rules:
+      - { ethertype: "IPv4", protocol: "tcp", port_range_min: "22", port_range_max: "22", remote_ip_prefix: "0.0.0.0/0", state: "present" }
+      - { ethertype: "IPv6", protocol: "tcp", port_range_min: "22", port_range_max: "22", remote_ip_prefix: "::/0", state: "present" }
+
+
+#####################
+# servers
+server_name_prefix: ""
+os_server:
+  myserver1.site1: { ip: "{{ipv4_prefix}}.10", network: "{{os_network_name}}", flavor: "c1.small", image: "{{os_image['xenial']}}", root_size: "20", security_groups: "{{site}}-ssh", hints: {}, floating_ip: '86.119.41.50' }
+
+

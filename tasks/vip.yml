@@ -1,0 +1,16 @@
+---
+
+- name: "{{os_action}} a port with a static VIP"
+  os_port:
+    auth: "{{ os_auth }}"
+    region_name: "{{ os_region }}"
+    state: "{{ os_vip_state }}"
+    name: "{{ item.name }}"
+    network: "{{ os_network_name }}"
+    fixed_ips:
+      - ip_address: "{{ item.ip }}"
+  when: os_action == "create" or os_purge_vip == "yes"
+  with_items:
+    - "{{ os_vip['ips'] }}"
+  tags:
+    - os_vip
