@@ -22,6 +22,10 @@ Edit the region information in the file `<repo>/group_vars/infra.site1.yml`
 ## Bootable Image
 Edit image name in `<repo>/group_vars/all/openstack.yml` to reflect name of a suitable image on your Openstack instance.
 
+    os_image:
+      xenial: "Ubuntu Xenial 16.04 (SWITCHengines)"
+
+
 ## Floating IP
 
 ### Manual Allocation
@@ -56,14 +60,15 @@ You could also have an IP automatically allocated and then after first VM creati
 It is possible to have several inventories: e.g. `production` `staging` etc.
 
 The inventory lists the server names of all servers. It does not matter if they can be resolved via DNS or not. Note that 
-the inventory does not list any IPs. They are specified in the site configurations.
+the inventory does not list any IPs. They are specified in the site configurations `<repo>/group_vars/infra.*.yml`
 
-If you have multiple sites, take care to organize the servers similar to the example provided. The servers must 
-belong to two groups, one per site and one per server type.
-This is such, that it is possible to create appropriate variable files in group_vars for each type of server.
+If you have multiple sites, take care to organize the servers in the inventory similar to the example provided. The servers must 
+belong to two groups each, one 'per site group' and one 'per server type group'. e.g. on site1, `myserver1.site1` 
+belongs to `server_group1` (a server type group) and `infra.site1` (a site group).
+Thanks to this, it is possible to create appropriate variable files in `group_vars` for each type of server and for each site.
 
-There needs to be an openstack group. The servers in there are pseudo servers which can all point to the 
-same server or localhost on which you have the Openstack clients installed. As with regular servers, the pseudo servers
+There needs to be an openstack group for 'pseudo openstack' servers, one for each site. The servers in there are pseudo servers which can all point to the 
+same physical server/VM or localhost on which you must have the Openstack clients installed. As with regular servers, the pseudo openstack servers
 have to be in a group per site.
 
 The group servers must contain all servers but not the pseudo openstack servers.
@@ -71,7 +76,7 @@ The group servers must contain all servers but not the pseudo openstack servers.
 
 ## Site Configuration
 
-Site Configuration files e.g. `infra.site1.yml` defined all the ressources that should be created for the site.
+Site Configuration files e.g. `infra.site1.yml` define all the ressources that should be created for the site.
 `infra.site1.yml` is a simple site to get started. `infra.site2.yml` is a more complex site showcasing the possible features of this role.
 
 The two site configs belong to `production`. Suppose you wanted to have a staging as well, then you'd create a similar `staging` inventory along with 
