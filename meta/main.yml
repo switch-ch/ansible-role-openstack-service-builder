@@ -64,8 +64,8 @@ galaxy_info:
       versions:
       - all
 
-  cloud_platforms:
-    - openstack
+  #cloud_platforms:
+  #  - openstack
 
   galaxy_tags:
     - openstack
