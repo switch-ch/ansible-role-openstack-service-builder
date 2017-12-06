@@ -32,7 +32,7 @@ Allocate a floating ip which you will be using as jumphost ip.
     
 Extract the info: 
 
-    `| floating_ip_address | 86.119.41.50                         |`
+    | floating_ip_address | 86.119.41.50                         |
 
 Edit the file `<repo>/ssh_config` and change the jumphost ip:
 
@@ -135,8 +135,9 @@ Get the ipv6 subnet details:
     openstack subnet list
     openstack subnet show site2_ipv6
 
-Take the network prefix from 
-     `| cidr              | 2001:620:5ca1:2e4::/64                                     |`
+Take the network prefix from
+
+     | cidr              | 2001:620:5ca1:2e4::/64                                     |
 
 Add the network prefix to `<repo>/group_vars/infra.site2.yml`
 
@@ -150,7 +151,7 @@ Get the uuid of the server group created:
     
 Extract the ID from the output:
 
-    `| c489e94f-0c1a-40c1-a979-a897fcc6db88 | server_group1 | anti-affinity |`
+    | c489e94f-0c1a-40c1-a979-a897fcc6db88 | server_group1 | anti-affinity |
 
 and add it to `<repo>/group_vars/infra.site2.yml`
 
@@ -164,6 +165,10 @@ and add it to `<repo>/group_vars/infra.site2.yml`
 Now you are ready to create the VMs:
 
     ansible-playbook -i production infra_set_up.yml --limit=*.site2 -t os_server_all,os_data
+
+Deploy the demo service:
+
+    ansible-playbook -i production service_playbook.yml --limit=*.site2
 
 #### Keep the info manually added:
 
