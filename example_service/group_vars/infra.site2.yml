@@ -17,6 +17,7 @@ os_region: "LS"
 #####################
 # networks
 os_network_name: "{{site}}"
+ipv6_prefix: "2001:620:5ca1:2e4:"
 ipv4_prefix: "10.0.102"
 os_network:
   - name: "{{os_network_name}}"
@@ -41,15 +42,15 @@ os_server_group:
   list:
     - { name: "server_group1", policies: ['anti-affinity'] }
   # look up id after they were created: `openstack server group list`
-  server_group1: "d5426315-91c1-4543-a80d-7c11cdaa7435"
+  server_group1: "c489e94f-0c1a-40c1-a979-a897fcc6db88"
 
 
 #####################
 # servers
 server_name_prefix: ""
 os_server:
-  myserver1.site2: { ip: "{{ipv4_prefix}}.10", network: "{{os_network_name}}", flavor: "c1.small", image: "{{os_image['xenial']}}", root_size: "20", security_groups: "{{site}}-ssh", hints: {group: "{{ os_server_group['server_group1'] }}"}, floating_ip: '86.119.41.50' }
-  myserver1.site2: { ip: "{{ipv4_prefix}}.10", network: "{{os_network_name}}", flavor: "c1.small", image: "{{os_image['xenial']}}", root_size: "20", security_groups: "{{site}}-ssh", hints: {group: "{{ os_server_group['server_group1'] }}"} }
+  myserver1.site2: { ip: "{{ipv4_prefix}}.10", network: "{{os_network_name}}", flavor: "c1.small", image: "{{os_image['xenial']}}", root_size: "20", security_groups: "{{site}}-ssh", hints: {group: "{{ os_server_group['server_group1'] }}"}, floating_ip: '86.119.30.214' }
+  myserver2.site2: { ip: "{{ipv4_prefix}}.11", network: "{{os_network_name}}", flavor: "c1.small", image: "{{os_image['xenial']}}", root_size: "20", security_groups: "{{site}}-ssh", hints: {group: "{{ os_server_group['server_group1'] }}"} }
 
 
 #####################

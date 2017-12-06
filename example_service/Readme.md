@@ -2,7 +2,7 @@ Sample Service for Openstack Service Builder Role
 =========
 
 This is a simple example of how one can build the virtual infrastructure for an imaginary service. 
-(The service in this example does nothing useful).
+(The service in this example does nothing useful, it is merely a demo).
 
 It should be possible to run the example right from this directory provided you added some config file as described in "Setup"
 
@@ -23,13 +23,33 @@ Edit the region information in the file `<repo>/group_vars/infra.site1.yml`
 Edit image name in `<repo>/group_vars/all/openstack.yml` to reflect name of a suitable image on your Openstack instance.
 
 ## Floating IP
+
+### Manual Allocation
 While it is not strictly necessary to do this beforehand, it is easier to do it this way. 
 Allocate a floating ip which you will be using as jumphost ip.
 
+    openstack floating ip create public
+    
+Extract the info: 
+
+    `| floating_ip_address | 86.119.41.50                         |`
+
 Edit the file `<repo>/ssh_config` and change the jumphost ip:
 
-    Host jumphost.zhdk
+    Host jumphost.site1
       HostName 86.119.41.50
+
+If you plan to use site2 too, do the same thing for site2 as well.
+
+### Automatic Allocation
+Alternatively you could leave the floating ip field empty. A new floating ip will then be allocated on VM creation and deallocated on VM deletion. E.g.
+
+      myserver1.site2: { ip: "{{ipv4_prefix}}.10", network: "{{os_network_name}}", flavor: "c1.small", image: "{{os_image['xenial']}}", root_size: "20", security_groups: "{{site}}-ssh", hints: {group: "{{ os_server_group['server_group1'] }}"}, floating_ip: '' }
+
+Note that you'll get a different floating ip each time if you want them to be allocated automatically.
+
+You could also have an IP automatically allocated and then after first VM creation edit the site config and add the floating ip to the server definition.
+
  
 ## Inventory
 
@@ -81,6 +101,8 @@ Run Playbooks
 
 Now it is time to run the playbooks:
 
+## Site1 (simple site)
+
 Build everything on site1:
 
     ansible-playbook -i production infra_set_up.yml --limit=*.site1
@@ -99,6 +121,71 @@ Rebuild a single server on site1:
     ansible-playbook -i production infra_set_up.yml --limit=myserver1.site1
     ansible-playbook -i production service_playbook.yml --limit=myserver1.site1
     
+
+## Site2 (complex site)
+
+First setup everything that is not a VM: (limit playbook to pseudo openstack server)
+
+    ansible-playbook -i production infra_set_up.yml --limit=os.site2
+
+
+#### IPv6
+Get the ipv6 subnet details:
+
+    openstack subnet list
+    openstack subnet show site2_ipv6
+
+Take the network prefix from 
+     `| cidr              | 2001:620:5ca1:2e4::/64                                     |`
+
+Add the network prefix to `<repo>/group_vars/infra.site2.yml`
+
+    ipv6_prefix: "2001:620:5ca1:2e4:"
+
+#### Server Groups
+
+Get the uuid of the server group created:
+
+    openstack server group list
+    
+Extract the ID from the output:
+
+    `| c489e94f-0c1a-40c1-a979-a897fcc6db88 | server_group1 | anti-affinity |`
+
+and add it to `<repo>/group_vars/infra.site2.yml`
+
+    os_server_group:
+      list:
+        - { name: "server_group1", policies: ['anti-affinity'] }
+      server_group1: "c489e94f-0c1a-40c1-a979-a897fcc6db88"
+
+#### VMs
+
+Now you are ready to create the VMs:
+
+    ansible-playbook -i production infra_set_up.yml --limit=*.site2 -t os_server_all,os_data
+
+#### Keep the info manually added:
+
+If you plan to tear down your site and rebuild it, you may want to keep some stuff around that you manually set up or which would destroy precious data.
+In order to do that just set the following variable to 'no' (which is the default) in the site config `<repo>/group_vars/infra.site2.yml`
+
+    os_purge_data_volume: "no"
+    os_purge_server_group: "no"
+    os_purge_security_group: "no"
+    os_purge_vip: "no"
+
+Also make sure to add the floating_ip to your VM definitions.  
+
+
+Clean Up
+=========
+
+Once you are done testing run:
+
+    ansible-playbook -i production infra_clean_up.yml
+    
+This will remove all ressource you just created from your openstack projects. (provided you left the `os_purge_*` variables set to `yes`)
 
 
 Tags

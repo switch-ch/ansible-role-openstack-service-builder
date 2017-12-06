@@ -9,12 +9,24 @@ Host *
     User ubuntu
 
 ##############################
-# ZHDK
+# site1
 
-Host jumphost.zhdk
+Host jumphost.site1
     HostName 86.119.41.50
 
-Host 10.0.100.*
+Host 10.0.101.*
     LogLevel error
     User ubuntu
-    ProxyCommand ssh -q -a -T -F ssh_config jumphost.zhdk -W %h:%p
+    ProxyCommand ssh -q -a -T -F ssh_config jumphost.site1 -W %h:%p
+
+
+##############################
+# site2
+
+Host jumphost.site2
+    HostName 86.119.30.214
+
+Host 10.0.102.*
+    LogLevel error
+    User ubuntu
+    ProxyCommand ssh -q -a -T -F ssh_config jumphost.site2 -W %h:%p
