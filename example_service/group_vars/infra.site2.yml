@@ -24,6 +24,8 @@ os_network:
     ipv4_cidr: "{{ipv4_prefix}}.0/24"
     external: "yes"
 
+os_jump_ip: "86.119.30.214"
+
 #####################
 # security groups (optional)
 
@@ -49,7 +51,7 @@ os_server_group:
 # servers
 server_name_prefix: ""
 os_server:
-  myserver1.site2: { ip: "{{ipv4_prefix}}.10", network: "{{os_network_name}}", flavor: "c1.small", image: "{{os_image['xenial']}}", root_size: "20", security_groups: "{{site}}-ssh", hints: {group: "{{ os_server_group['server_group1'] }}"}, floating_ip: '86.119.30.214' }
+  myserver1.site2: { ip: "{{ipv4_prefix}}.10", network: "{{os_network_name}}", flavor: "c1.small", image: "{{os_image['xenial']}}", root_size: "20", security_groups: "{{site}}-ssh", hints: {group: "{{ os_server_group['server_group1'] }}"}, floating_ip: '{{os_jump_ip}}' }
   myserver2.site2: { ip: "{{ipv4_prefix}}.11", network: "{{os_network_name}}", flavor: "c1.small", image: "{{os_image['xenial']}}", root_size: "20", security_groups: "{{site}}-ssh", hints: {group: "{{ os_server_group['server_group1'] }}"} }
 
 

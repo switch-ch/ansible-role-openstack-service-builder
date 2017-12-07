@@ -1,0 +1,15 @@
+---
+
+
+# take ip from infrastructure definition instead of inventory file
+ansible_host: "{{ os_server[inventory_hostname].ip }}"
+
+# use local ssh_config which instructs ssh to use one server as jumphost.
+#ansible_ssh_common_args: ' -F ssh_config'
+
+#os_jump_user: ""
+os_jump_user: "ubuntu"
+os_jump: "{{[os_jump_user, os_jump_ip] | join('@') | regex_replace('^@(.*)$', '\\1') }}"
+
+ansible_ssh_user: "ubuntu"
+ansible_ssh_common_args: '-F /dev/null -o "UseKeychain yes" -o "StrictHostKeyChecking no" -o UserKnownHostsFile=/dev/null -o "ProxyCommand ssh \"-o UseKeychain yes\" \"-o StrictHostKeyChecking no\" \"-o UserKnownHostsFile=/dev/null\" -F /dev/null -q -a -T {{os_jump}} -W %h:%p"'

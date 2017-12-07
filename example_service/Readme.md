@@ -6,12 +6,26 @@ This is a simple example of how one can build the virtual infrastructure for an 
 
 It should be possible to run the example right from this directory provided you added some config file as described in "Setup"
 
-Setup
-=========
+#Setup
 
 ## Openstack Credentials
 You need to add a file with your openstack credentials:
 Copy the file `<repo>/group_vars/all/user.sample.yml` to `<repo>/group_vars/all/user.yml` and add your credential to it.
+
+    vault_os_username:
+        my_project1: 'christian.schnidrig@switch.ch'
+        my_project2: 'christian.schnidrig@switch.ch'
+    vault_os_password:
+        my_project1: 'change_me'
+        my_project2: 'change_me'
+    vault_os_tenant:
+        my_project1: 'my_project1'
+        my_project2: 'my_project2'
+    vault_os_ssh_key:
+        my_project1: "Christian-Schnidrig"
+        my_project2: "Christian-Schnidrig"
+
+You probably want to check the `os_auth_url` in `<repo>/group_vars/all/user_vars.yml` as well.
 
 Edit the region information in the file `<repo>/group_vars/infra.site1.yml`
 
@@ -26,10 +40,10 @@ Edit image name in `<repo>/group_vars/all/openstack.yml` to reflect name of a su
       xenial: "Ubuntu Xenial 16.04 (SWITCHengines)"
 
 
-## Floating IP
+## Floating IP (Jump Host)
 
 ### Manual Allocation
-While it is not strictly necessary to do this beforehand, it is easier to do it this way. 
+While it is not strictly necessary to manually allocate a floating ip, it is easier to do it this way. 
 Allocate a floating ip which you will be using as jumphost ip.
 
     openstack floating ip create public
@@ -38,7 +52,16 @@ Extract the info:
 
     | floating_ip_address | 86.119.41.50                         |
 
-Edit the file `<repo>/ssh_config` and change the jumphost ip:
+Edit the site config `<repo>/infra.site1.yml` and change the `os_jump_ip` variable:
+
+    os_jump_ip: "86.119.41.50"
+
+
+
+Optional: 
+- For your convenience, there is a ssh config file `<repo>/ssh_config` provided. It is not needed by
+the role, but you might find it useful and therefore might want to edit it here as well:
+
 
     Host jumphost.site1
       HostName 86.119.41.50
@@ -83,6 +106,7 @@ The two site configs belong to `production`. Suppose you wanted to have a stagin
 the corresponding `infra.staging_site1.yml` `infra.staging_site2.yml` configs.
 
 Mandatory config data:
+- os_jump_ip
 - os_network
 - os_server
 

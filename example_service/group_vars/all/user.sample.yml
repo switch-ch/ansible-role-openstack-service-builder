@@ -12,9 +12,6 @@
 #vault_os_tenant:
 #    my_project1: 'my_project1'
 #    my_project2: 'my_project2'
-#vault_os_region:
-#    my_project1: 'ZH'
-#    my_project2: 'LS'
 #vault_os_ssh_key:
 #    my_project1: "Christian-Schnidrig"
 #    my_project2: "Christian-Schnidrig"

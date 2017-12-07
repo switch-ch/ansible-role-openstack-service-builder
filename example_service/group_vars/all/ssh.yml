@@ -1,8 +1,0 @@
----
-
-
-# take ip from infrastructure definition instead of inventory file
-ansible_host: "{{ os_server[inventory_hostname].ip }}"
-
-# use local ssh_config which instructs ssh to use one server as jumphost.
-ansible_ssh_common_args: ' -F ssh_config'
