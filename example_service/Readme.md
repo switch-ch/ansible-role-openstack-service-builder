@@ -24,8 +24,9 @@ Copy the file `<repo>/group_vars/all/user.sample.yml` to `<repo>/group_vars/all/
     vault_os_ssh_key:
         my_project1: "Christian-Schnidrig"
         my_project2: "Christian-Schnidrig"
-
-You probably want to check the `os_auth_url` in `<repo>/group_vars/all/user_vars.yml` as well.
+    vault_os_auth_url:
+        my_project1: "https://keystone.cloud.switch.ch:5000/v2.0"
+        my_project2: "https://keystone.cloud.switch.ch:5000/v2.0"
 
 Edit the region information in the file `<repo>/group_vars/infra.site1.yml`
 

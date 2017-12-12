@@ -4,7 +4,7 @@
 os_username: '{{vault_os_username[os_project]}}'
 os_password: '{{vault_os_password[os_project]}}'
 os_tenant: '{{vault_os_tenant[os_project]}}'
-os_auth_url: 'https://keystone.cloud.switch.ch:5000/v2.0'
+os_auth_url: '{{vault_os_auth_url[os_project]}}'
 os_ssh_key: "{{vault_os_ssh_key[os_project]}}"
 
 os_auth: 

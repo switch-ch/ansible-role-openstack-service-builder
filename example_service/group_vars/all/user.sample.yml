@@ -15,4 +15,7 @@
 #vault_os_ssh_key:
 #    my_project1: "Christian-Schnidrig"
 #    my_project2: "Christian-Schnidrig"
+#vault_os_auth_url:
+#    my_project1: "https://keystone.cloud.switch.ch:5000/v2.0"
+#    my_project2: "https://keystone.cloud.switch.ch:5000/v2.0"
 
