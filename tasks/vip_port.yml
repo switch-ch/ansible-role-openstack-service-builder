@@ -6,11 +6,11 @@
     region_name: "{{ os_region }}"
     state: "{{ os_vip_state }}"
     network: "{{ os_network_name }}"
-    name: "{{ item.name }}"
+    name: "{{ site }}-{{ inventory_hostname }}-port_{{ os_network_name }}"
     allowed_address_pairs: "{{ item.ips }}"
   with_items:
-    - "{{ os_vip['ports'] }}"
-  when: os_action == "create"
+    - "{{ os_vip['ports'][inventory_hostname] }}"
+  when: os_action == "create" and os_vip['ports'][inventory_hostname] is defined
   tags:
-    - os_vip_port
+    - os_vip
     - os_server_all

@@ -73,5 +73,7 @@ os_vip:
   ips:
     - { name: "server_group1_vip", ip: "{{ server_group1_vip }}" }
   ports:
-    - { name: '{{ site }}-myserver1.site2-port_{{ os_network_name }}', ips: [ { ip_address: "{{ server_group1_vip }}" } ] }
-    - { name: '{{ site }}-myserver2.site2-port_{{ os_network_name }}', ips: [ { ip_address: "{{ server_group1_vip }}" } ] }
+     myserver1.site2:
+      ips: [ ip_address: "{{ server_group1_vip }}" ]
+    myserver2.site2:
+      ips: [ ip_address: "{{ server_group1_vip }}" ]

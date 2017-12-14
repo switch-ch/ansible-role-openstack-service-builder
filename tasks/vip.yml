@@ -9,7 +9,7 @@
     network: "{{ os_network_name }}"
     fixed_ips:
       - ip_address: "{{ item.ip }}"
-  when: os_action == "create" or os_purge_vip == "yes"
+  when: os_action == "setup" or os_purge_vip == "yes"
   with_items:
     - "{{ os_vip['ips'] }}"
   tags:
