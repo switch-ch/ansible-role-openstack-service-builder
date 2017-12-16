@@ -8,6 +8,6 @@
     name: "{{ item.name }}"
     policies: "{{ item.policies }}"
   with_items: "{{ os_server_group['list'] }}"
-  when: os_action == "create" or os_purge_server_group == "yes"
+  when: os_action == "setup" or os_purge_server_group == "yes"
   tags:
     - os_server_group
