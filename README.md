@@ -2,7 +2,7 @@ Openstack Service Builder Role
 =========
 
 This is a role that can be used to setup a multi-region/-project service
- on Openstack. It has been testet on 
+ on Openstack. It has been tested on 
  [SWITCHengines](https://www.switch.ch/de/engines/). 
  Your mileage on any other Openstack installation may vary. 
 
