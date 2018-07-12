@@ -18,10 +18,10 @@ It can create and delete:
 
 It allows for the definition of your virtual infrastructure in a declarative manner. E.g.
 
-The definition for a VM with one data volume may look like this:
+The definition for a VM with one data volume may look like this: (host_number is the host part of the IP address)
 
     os_server:
-      my_server1: { ip: "10.0.1.10",  network: "my_network", flavor: "c1.small", image: "Ubuntu 16.04", root_size: "20", security_groups: "default,ssh",  hints: {}, floating_ip: '86.119.41.50' }
+      my_server1: { host_number: "11",  networks: ["my_network"], flavor: "c1.small", image: "Ubuntu 16.04", root_size: "20", security_groups: "default,ssh",  hints: {}, floating_ip: '86.119.41.50' }
  
     os_volumes:
       my_server1:

@@ -1,0 +1,30 @@
+---
+
+- name: "init vars"
+  set_fact:
+    _ips: []
+  tags:
+    - os_vip
+    - os_server_all
+
+- name: "Generate ip list for port in network {{ network.name }}"
+  set_fact:
+    _ips: "{{ _ips + [{ 'ip_address': (item | ipaddr('address')) }]}}"
+  loop: "{{ os_vip.vm_ports[server_name] }}"
+  when: (item | ipaddr(network.cidr | ipv4 | first) > 0) or (item | ipaddr(network.cidr | ipv6 | first) > 0)
+  tags:
+    - os_vip
+    - os_server_all
+
+- name: "{{os_action}}: Make VIP ip assignable to vm-ports"
+  os_port:
+    auth: "{{ os_auth }}"
+    region_name: "{{ os_region }}"
+    state: "{{ os_vip_state }}"
+    network: "{{ network.name }}"
+    name: "{{ site }}-{{ server_name }}-port_{{ network.name }}"
+    allowed_address_pairs: "{{ _ips }}"
+  when: os_action == "create"
+  tags:
+    - os_vip
+    - os_server_all

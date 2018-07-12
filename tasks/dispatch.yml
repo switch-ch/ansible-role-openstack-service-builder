@@ -4,9 +4,9 @@
   block:
     - import_tasks: data_volume_attachments.yml
     - import_tasks: data_volumes.yml
-    - import_tasks: floating_ip.yml
-    - import_tasks: server.yml
-    - import_tasks: port.yml
+    - import_tasks: floating_ips.yml
+    - import_tasks: servers.yml
+    - import_tasks: ports.yml
     - import_tasks: volume.yml
   when: os_action == "delete"
   delegate_to: "{{os_cli_server}}"
@@ -15,7 +15,7 @@
   block:
     - import_tasks: server_group.yml
     - import_tasks: security_group.yml
-    - import_tasks: vip.yml
+    - import_tasks: vips.yml
     - import_tasks: router.yml
     - import_tasks: network.yml
   when: os_action == "cleanup"
@@ -26,16 +26,16 @@
     - import_tasks: router.yml
     - import_tasks: security_group.yml
     - import_tasks: server_group.yml
-    - import_tasks: vip.yml
+    - import_tasks: vips.yml
   when: os_action == "setup"
 
 - name: "creation"
   block:
     - import_tasks: volume.yml
-    - import_tasks: port.yml
-    - import_tasks: server.yml
-    - import_tasks: floating_ip.yml
-    - import_tasks: vip_port.yml
+    - import_tasks: ports.yml
+    - import_tasks: servers.yml
+    - import_tasks: floating_ips.yml
+    - import_tasks: vm_vip_ports.yml
     - import_tasks: data_volumes.yml
     - import_tasks: data_volume_attachments.yml
   when: os_action == "create"

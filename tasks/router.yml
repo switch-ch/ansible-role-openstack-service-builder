@@ -9,7 +9,10 @@
     network: "public"
     interfaces: "{{ item.name }}_ipv4"
     timeout: 200
+    #project: "appuio_001"
   with_items: "{{ os_network }}"
+  # TODO: ignore errors is just a work around when trying to delete a non existing router
+  ignore_errors: yes
   tags:
     - os_network
     - os_router

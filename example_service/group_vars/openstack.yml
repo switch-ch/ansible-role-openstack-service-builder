@@ -5,6 +5,6 @@
 # the config is configured to run on localhost on a MAC.
 
 # on MAC specify interpreter to get rid of "missing shade" error, not needed otherwise
-ansible_python_interpreter: "/usr/local/bin/python"
+ansible_python_interpreter: "/usr/bin/env python"
 
 ansible_connection: local

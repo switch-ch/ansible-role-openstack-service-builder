@@ -1,18 +1,20 @@
 ---
 
-- name: "{{ os_action }} a network port"
-  os_port:
-    auth: "{{ os_auth }}"
-    region_name: "{{ os_region }}"
-    state: "{{ os_vm_state }}"
-    name: "{{ site }}-{{ item }}-port_{{ os_network_name }}"
-    network: "{{ os_network_name }}"
-    fixed_ips:
-      - ip_address: "{{ os_server[item].ip }}"
-      - ip_address: "{{ ipv6_prefix }}:{{ os_server[item].ip | regex_replace('.*\\.(.*)$', '\\1') }}"
-    security_groups: "{{ os_server[item].security_groups }}"
-  with_items: "{{ server_list }}"
-  when: server_list != [''] and ipv6_prefix != ""
+- name: "Calculate ip addresses for server"
+  set_fact:
+    _ip_list: "{{os_network | selectattr('name', 'equalto', network_name) | list |json_query(\"[].cidr\") | flatten | ipaddr(os_server[inventory_hostname].host_number) | ipaddr('address') }}"
+  tags:
+    - os_port
+    - os_server_all
+
+- name: "Generate fixed_ips list for server"
+  set_fact:
+    fixed_ips: |
+      {% set res = [] -%}
+      {% for ip in _ip_list -%}
+      {% set ignored = res.extend([ { 'ip_address': ip } ]) -%}
+      {%- endfor -%}
+      {{ res }}
   tags:
     - os_port
     - os_server_all
@@ -22,15 +24,13 @@
     auth: "{{ os_auth }}"
     region_name: "{{ os_region }}"
     state: "{{ os_vm_state }}"
-    name: "{{ site }}-{{ item }}-port_{{ os_network_name }}"
-    network: "{{ os_network_name }}"
-    fixed_ips:
-      - ip_address: "{{ os_server[item].ip }}"
-    security_groups: "{{ os_server[item].security_groups }}"
-  with_items: "{{ server_list }}"
-  when: server_list != [''] and ipv6_prefix == ""
+    name: "{{ site }}-{{ server_name }}-port_{{ network_name }}"
+    network: "{{ network_name }}"
+    fixed_ips: "{{ fixed_ips }}"
+    security_groups: "{{ os_server[server_name].security_groups }}"
   tags:
     - os_port
     - os_server_all
+
 
 

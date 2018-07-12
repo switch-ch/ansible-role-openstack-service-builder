@@ -1,0 +1,9 @@
+---
+
+- include_tasks: floating_ip.yml
+  with_items: "{{ server_list }}"
+  loop_control:
+    loop_var: server_name
+  tags:
+    - os_floating_ip
+    - os_server_all

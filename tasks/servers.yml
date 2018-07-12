@@ -1,0 +1,9 @@
+---
+
+- include_tasks: server.yml
+  with_items: "{{ server_list }}"
+  loop_control:
+    loop_var: server_name
+  tags:
+    - os_server
+    - os_server_all

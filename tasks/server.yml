@@ -1,20 +1,32 @@
 ---
 
+- name: "Generate NICs list"
+  set_fact:
+    _nics: |
+      {% set res = [] -%}
+      {% for network_name in os_server[server_name].networks -%}
+      {% set ignored = res.extend([ { 'port-name': site + '-' + server_name + '-port_' + network_name } ]) -%}
+      {%- endfor -%}
+      {{ res }}
+  tags:
+    - os_server
+    - os_server_all
+
+
 - name: "{{ os_action }} a server"
   os_server:
     state: "{{ os_vm_state }}"
     auth: "{{ os_auth }}"
     region_name: "{{ os_region }}"
-    name: "{{ server_name_prefix }}{{ item }}"
-    boot_volume: "{{ site }}-{{ item }}_root"
+    name: "{{ server_name_prefix }}{{ server_name }}"
+    boot_volume: "{{ site }}-{{ server_name }}_root"
     key_name: "{{ os_ssh_key }}"
     timeout: 200
-    flavor: "{{ os_server[item].flavor }}"
+    flavor: "{{ os_server[server_name].flavor }}"
     auto_ip: false
-    nics:
-      - port-name: "{{ site }}-{{ item }}-port_{{ os_network_name }}"
-    scheduler_hints: "{{ os_server[item].hints }}"
-  with_items: "{{ server_list }}"
+    nics: "{{ _nics }}"
+    scheduler_hints: "{{ os_server[server_name].hints }}"
+    userdata: "{{ os_server[server_name].userdata | default(omit) }}"
   when: server_list != ['']
   tags:
     - os_server

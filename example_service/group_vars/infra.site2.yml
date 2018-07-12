@@ -17,12 +17,13 @@ os_region: "LS"
 #####################
 # networks
 os_network_name: "{{site}}"
-ipv6_prefix: "2001:620:5ca1:2e4:"
-ipv4_prefix: "10.0.102"
+ipv6_cidr: "2001:620:5ca1:2e4::/64"
+ipv4_cidr: "10.0.102.0/24"
 os_network:
   - name: "{{os_network_name}}"
-    ipv4_cidr: "{{ipv4_prefix}}.0/24"
-    external: "yes"
+    cidr: 
+      - "{{ ipv4_cidr }}"
+      - "{{ ipv6_cidr }}"
 
 os_jump_ip: "86.119.30.214"
 
@@ -50,9 +51,15 @@ os_server_group:
 #####################
 # servers
 server_name_prefix: ""
+
+sample_userdata: |
+  {%- raw -%}#!/bin/bash
+  echo "hello world" > /hello
+  {% endraw %}
+
 os_server:
-  myserver1.site2: { ip: "{{ipv4_prefix}}.10", network: "{{os_network_name}}", flavor: "c1.small", image: "{{os_image['xenial']}}", root_size: "20", security_groups: "{{site}}-ssh", hints: {group: "{{ os_server_group['server_group1'] }}"}, floating_ip: '{{os_jump_ip}}' }
-  myserver2.site2: { ip: "{{ipv4_prefix}}.11", network: "{{os_network_name}}", flavor: "c1.small", image: "{{os_image['xenial']}}", root_size: "20", security_groups: "{{site}}-ssh", hints: {group: "{{ os_server_group['server_group1'] }}"} }
+  myserver1.site2: { host_number: "10", network: ["{{os_network_name}}"], flavor: "c1.small", image: "{{os_image['xenial']}}", root_size: "20", security_groups: "{{site}}-ssh", hints: {group: "{{ os_server_group['server_group1'] }}"}, floating_ip: '{{os_jump_ip}}' }
+  myserver2.site2: { host_number: "11", network: ["{{os_network_name}}"], flavor: "c1.small", image: "{{os_image['xenial']}}", root_size: "20", security_groups: "{{site}}-ssh", hints: {group: "{{ os_server_group['server_group1'] }}"}, userdata: "{{ sample_userdata }}" }
 
 
 #####################
@@ -69,11 +76,15 @@ os_purge_vip: "yes"
 
 server_group1_vip: "{{ipv4_prefix}}.100"
 
+
+vip_ip_lists:
+  master_vip: 
+    - "{{ipv4_cidr| ipaddr('100')}}"
+    - "{{ipv6_cidr| ipaddr('100')}}"
+
 os_vip:
-  ips:
-    - { name: "server_group1_vip", ip: "{{ server_group1_vip }}" }
-  ports:
-     myserver1.site2:
-      ips: [ ip_address: "{{ server_group1_vip }}" ]
-    myserver2.site2:
-      ips: [ ip_address: "{{ server_group1_vip }}" ]
+  vip_ports: # ports are needed for floating ip assignement. This is an ipv4 only thing
+    - { name: "master_vip", ips: "{{ vip_ip_lists.master_vip }}" }
+  vm_ports: # ports of VMs that need to be patched with allowed_address_pairs info
+    myserver1.site2: "{{ lookup('flattened', vip_ip_lists.master_vip).split(',') }}"
+    myserver2.site2: "{{ lookup('flattened', vip_ip_lists.master_vip).split(',') }}"

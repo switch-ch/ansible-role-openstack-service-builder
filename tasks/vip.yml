@@ -1,16 +1,31 @@
 ---
 
+- set_fact:
+    _network_name: "{{ item.name }}"
+  when: vip_port.ips | ipaddr(item.cidr | ipv4 | first) | length > 0
+  loop: "{{ os_network }}"
+  tags:
+    - os_vip
+
+- name: "Generate ip list for port"
+  set_fact:
+    ips: |
+      {% set res = [] -%}
+      {% for ip in vip_port.ips -%}
+      {% set ignored = res.extend([ { 'ip_address': (ip | ipaddr('address')) } ]) -%}
+      {%- endfor -%}
+      {{ res }}
+  tags:
+    - os_vip
+
 - name: "{{os_action}} a port with a static VIP"
   os_port:
     auth: "{{ os_auth }}"
     region_name: "{{ os_region }}"
     state: "{{ os_vip_state }}"
-    name: "{{ item.name }}"
-    network: "{{ os_network_name }}"
-    fixed_ips:
-      - ip_address: "{{ item.ip }}"
+    name: "{{ vip_port.name }}"
+    network: "{{ _network_name }}"
+    fixed_ips: "{{ ips }}"
   when: os_action == "setup" or os_purge_vip == "yes"
-  with_items:
-    - "{{ os_vip['ips'] }}"
   tags:
     - os_vip

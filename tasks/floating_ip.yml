@@ -1,16 +1,24 @@
 ---
 
+- name: "set network name"
+  set_fact:
+    _network_name: "{{ os_server[server_name].networks[0] }}"
+  when: os_server[server_name].floating_ip is defined
+  tags:
+    - os_floating_ip
+    - os_server_all
+
 - name: "{{ os_action }} allocate and attach a new floating ip"
   os_floating_ip:
     state: "{{ os_state }}"
     auth: "{{ os_auth }}"
     region_name: "{{ os_region }}"
-    server: "{{ server_name_prefix }}{{ item }}"
-    fixed_address: "{{ os_server[item].ip }}"
+    server: "{{ server_name_prefix }}{{ server_name }}"
+    nat_destination: "{{ network_name }}"
     timeout: 200
+    network: "public"
     purge: "yes"
-  with_items: "{{ server_list }}"
-  when: server_list != [''] and os_server[item].floating_ip is defined and os_server[item].floating_ip == ''
+  when: _network_name is defined and os_server[server_name].floating_ip == ''
   ignore_errors: yes
   tags:
     - os_floating_ip
@@ -21,12 +29,11 @@
     state: "{{ os_state }}"
     auth: "{{ os_auth }}"
     region_name: "{{ os_region }}"
-    floating_ip_address: "{{ os_server[item].floating_ip }}"
-    server: "{{ server_name_prefix }}{{ item }}"
-    fixed_address: "{{ os_server[item].ip }}"
+    server: "{{ server_name_prefix }}{{ server_name }}"
+    nat_destination: "{{ _network_name }}"
     timeout: 200
-  with_items: "{{ server_list }}"
-  when: server_list != [''] and os_server[item].floating_ip is defined and os_server[item].floating_ip != ''
+    floating_ip_address: "{{ os_server[server_name].floating_ip }}"
+  when: _network_name is defined and os_server[server_name].floating_ip != ''
   ignore_errors: yes
   tags:
     - os_floating_ip

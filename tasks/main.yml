@@ -1,5 +1,12 @@
 ---
 
+# - debug:
+#     msg: "{{ os_network | selectattr('name', 'equalto', os_server[inventory_hostname].networks[0]) | list |json_query(\"[].cidr\") | flatten | ipaddr(os_server[inventory_hostname].host_number) | ipaddr('address') | zip_longest([], fillvalue='ip_address') | list |permutations | list | dict }}"
+#     #msg: "{{ os_network | selectattr('name', 'equalto', os_server[inventory_hostname].networks[0]) | list |json_query(\"[].cidr\") | ipv4 | ipaddr(os_server[inventory_hostname].host_number) | ipaddr('address') | flatten}}"
+#     #msg: "{{ os_network | selectattr('name', 'equalto', os_server[inventory_hostname].networks[0]) | list |json_query(\"[].cidr\")  | ipaddr(os_server[inventory_hostname].host_number) | ipaddr('address') | flatten| zip_longest([], fillvalue='X') | list }}"
+#   tags:
+#     - debug
+
 - import_tasks: "set_defaults.yml"
   tags:
     - infra

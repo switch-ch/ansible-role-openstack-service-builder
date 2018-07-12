@@ -1,0 +1,9 @@
+---
+
+- include_tasks: ports_per_server.yml
+  with_items: "{{ server_list }}"
+  loop_control:
+    loop_var: server_name
+  tags:
+    - os_port
+    - os_server_all

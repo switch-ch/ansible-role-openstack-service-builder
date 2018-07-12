@@ -1,0 +1,9 @@
+---
+
+- include_tasks: vm_vip_ports_by_network.yml
+  with_items: "{{ os_vip.vm_ports }}"
+  loop_control:
+    loop_var: server_name
+  tags:
+    - os_vip
+    - os_server_all

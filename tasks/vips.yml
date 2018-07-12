@@ -1,0 +1,9 @@
+---
+
+- name: "loop on vip.yml"
+  include_tasks: vip.yml
+  with_items: "{{ os_vip.vip_ports }}"
+  loop_control:
+    loop_var: vip_port
+  tags:
+    - os_vip

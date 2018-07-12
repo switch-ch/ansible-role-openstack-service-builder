@@ -1,0 +1,9 @@
+---
+
+- include_tasks: port.yml
+  with_items: "{{ os_server[server_name].networks }}"
+  loop_control:
+    loop_var: network_name
+  tags:
+    - os_port
+    - os_server_all

@@ -17,11 +17,11 @@ os_region: "ZH"
 #####################
 # networks
 os_network_name: "{{site}}"
-ipv4_prefix: "10.0.101"
+ipv4_cidr: "10.0.101.0/24"
 os_network:
   - name: "{{os_network_name}}"
-    ipv4_cidr: "{{ipv4_prefix}}.0/24"
-    external: "yes"
+    cidr:
+      - "{{ ipv4_cidr }}"
 
 os_jump_ip: "86.119.41.50"
 
@@ -41,6 +41,6 @@ os_security_group:
 # servers
 server_name_prefix: ""
 os_server:
-  myserver1.site1: { ip: "{{ipv4_prefix}}.10", network: "{{os_network_name}}", flavor: "c1.small", image: "{{os_image['xenial']}}", root_size: "20", security_groups: "{{site}}-ssh", hints: {}, floating_ip: '{{os_jump_ip}}' }
+  myserver1.site1: { host_number: "10", networks: ["{{os_network_name}}"], flavor: "c1.small", image: "{{os_image['xenial']}}", root_size: "20", security_groups: "{{site}}-ssh", hints: {}, floating_ip: '{{os_jump_ip}}' }
 
 

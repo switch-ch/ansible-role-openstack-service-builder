@@ -18,7 +18,7 @@
     region_name: "{{ os_region }}"
     name: "{{ item.name }}_ipv4"
     network_name: "{{ item.name }}"
-    cidr: "{{ item.ipv4_cidr }}"
+    cidr: "{{ item.cidr | ipv4 | join() }}"
     timeout: 200
   with_items: "{{ os_network }}"
   tags:

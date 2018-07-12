@@ -121,10 +121,10 @@ Optional config data:
 
 ### IPv6
 
-IPv6 is optional. If you choose to use it, then you need to add the network prefix you got in the 
+IPv6 is optional. If you choose to use it, then you need to add the network cidr you got in the 
 file `<repo>/group_vars/infra.site1.yml` after having created the network and before you create any VMs.
 
-    ipv6_prefix: "2001:620:5ca1:4002:"
+    ipv6_cidr: "2001:620:5ca1:4002::/64"
 
 Run Playbooks
 =========
@@ -169,9 +169,9 @@ Take the network prefix from
 
      | cidr              | 2001:620:5ca1:2e4::/64                                     |
 
-Add the network prefix to `<repo>/group_vars/infra.site2.yml`
+Add the network cidr to `<repo>/group_vars/infra.site2.yml`
 
-    ipv6_prefix: "2001:620:5ca1:2e4:"
+    ipv6_cidr: "2001:620:5ca1:2e4::/64"
 
 #### Server Groups
 
