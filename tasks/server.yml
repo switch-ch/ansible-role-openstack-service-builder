@@ -26,6 +26,7 @@
     auto_ip: false
     nics: "{{ _nics }}"
     scheduler_hints: "{{ os_server[server_name].hints }}"
+    security_groups: "{{ os_server[server_name].security_groups }}"
     userdata: "{{ os_server[server_name].userdata | default(omit) }}"
   when: server_list != ['']
   tags:

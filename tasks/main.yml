@@ -8,6 +8,7 @@
 #     - debug
 
 - import_tasks: "set_defaults.yml"
+  delegate_to: "{{os_cli_server}}"
   tags:
     - infra
 
