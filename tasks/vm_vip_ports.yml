@@ -4,6 +4,7 @@
   with_items: "{{ os_vip.vm_ports }}"
   loop_control:
     loop_var: server_name
+  when: os_vip.vip_ports is defined
   tags:
     - os_vip
     - os_server_all
